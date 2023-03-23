@@ -1,8 +1,53 @@
-# 한경호
+# 202130134 한경호
 
 ## 3/23 4주차
 
+## React 프로젝트 생성 및 깃 연동하기
 
+1. React 프로젝트 생성하기
+```
+1. npx create-react-app 23-React1
+2. npm start
+```
+
+2. Git 연동하기
+
+```
+1. git init
+2. 본인의 깃허브 계정에 들어가서 연동할 repository 만들기
+3. git remote add origin 만들어진 주소
+```
+
+3. 깃허브에 작성한 코드를 레퍼지토리에 푸쉬하면 완성
+
+
+## JSX 
+
+* 자바스크립트의 모든 기능이 포함된 자바스크립트의 확장 문법
+* Javascript와 XML/HTML을 합친 것
+```javascript
+const name = 'Josh Perez';
+const element = <h1>Hello, {name}</h1>;
+
+```
+
+
+### JSX의 역할
+
+* JSX는 내부적으로 XML/HTML 코드를 자바스크립트로 변환한다.
+* 이 역할을 하는 함수가 createElement()라는 함수이다.
+
+### JSX의 장점
+
+* 코드가 간결해진다.
+* 가독성이 향상된다
+* Injection Attack이라 불리는 해킹 방법을 방어함으로써 보안에 강하다
+
+### JSX의 사용법
+
+* 모든 자바스크립트 문법을 지원한다
+* 자바스크립트 문법에 XML과 HTML을 섞어서 사용한다
+---
 
 ## 3/16 3주차
 
@@ -50,7 +95,7 @@
 
 
 #### CDN 링크 
-```
+```javascript
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 
 
