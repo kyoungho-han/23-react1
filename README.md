@@ -1,70 +1,102 @@
-# Getting Started with Create React App
+# 한경호
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 3/23 4주차
 
-## Available Scripts
 
-In the project directory, you can run:
 
-### `npm start`
+## 3/16 3주차
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## React 
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+* 사용자 인터페이스를 만들기 위한 자바스크립트 라이브러리
+* 하나의 프로그램을 만드는 툴, 렌더링 툴
+* 복잡한 사이트를 쉽고 빠르게 만들기 위한 툴
 
-### `npm test`
+    ### React 장점
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+    1. 빠른 업데이트와 렌더링 속도
+        * 빠른 업데이트를 위해 virtual DOM을 사용
+    2. 컴포넌트 기반 구조
+        * PascalCase : 앞에 문자부터 대문자 ex) UpperCase
+        * CamelCase : 중간 문자부터 대문자 ex) upperCase
+        * 에어비앤비 사이트 화면이 대표적인 컴포넌트 구조
+    3. 재사용성
+        * 반복적인 작업을 줄여주기 때문에 생산성을 높임
+        * 유지보수 용이
+        * 재사용이 가능 하려면 해당 모듈의 의존성이 없어야함
+    4. 든든한 지원군
+        * 메타(구 페이스북)에서 오픈소스 프로젝트로 관리하고 있어 계속 발전하고 있음
+    5. 활발한 지식 공유 & 커뮤니티
+    6. 모바일 앱 개발 가능
+        * 리액트 네이티브라는 모바일 환경 UI프레임워크를 사용하면 크로스 플랫폼(cross-platform) 모바일앱을 개발할 수 있음
+    
+    ### React 단점 
+    1. 방대한 학습량
+        * 단 자바스크립트를 공부한경우 빠르게 습득가능
+    2. 높은 상태 관리 복잡도
 
-### `npm run build`
+### 동기식/비동기식
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+* 동기식 : 요청과 그 결과가 동시에 일어난다는 약속
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+    * 장점 : 설계가 매우 간단하고 직관적임
+    * 단점 : 결과가 주어질 때까지 아무것도 못하고 대기해야함
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+* 비동기식 : 동시에 일어나지 않는다는 의미 
+    * 장점 : 결과가 주어지는데 시간이 걸리더라도 그 시간 동안에 다른 작업을 할 수 있으므로 자원들을 효율적으로 사용가능 
+    * 단점 : 동기식보다 설계가 복잡함
 
-### `npm run eject`
+* 동기식과 비동기식 차이의 기준 : 서버와 클라이언트가 같이 작동하는지가 기준
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+#### CDN 링크 
+```
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+```
 
-## Learn More
+### 리액트 적용하기
+1. 새로운 폴더 생성하기
+2. npx create-react-app my-app
+3. npm start
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
+## 3/9 2주차
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Html
 
-### Analyzing the Bundle Size
+* Single Page Application - 단일 페이지로 구성된 웹 어플리케이션
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+* HTML5test - 브라우저의 html 호환성 테스트를 검사할 수 있는 사이트
 
-### Making a Progressive Web App
+## JavaScript
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+* ES6 (ECMAScript6) 
 
-### Advanced Configuration
+* var 보단 const를 많이 사용
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+* component class형 component, 함수형 component - 함수형 component가 더 간결하고 class형 component에서 하는 걸 다 할 수 있기 때문에 요즘엔 함수형 component 사용 비율 증가
 
-### Deployment
+## JSON 스타일 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+* key와 key value로 이루어져 있음
 
-### `npm run build` fails to minify
+### 연산자 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+* 대입 연산자, 산술 연산자, 대입+산술 연산자, 증감 연산자 (postfix방식 a++, prefix방식 ++a), 비교 연산자, 동등 연산자/일치 연산자, 이진 논리 연산자, 삼항 연산자
+
+* '==='은 속성까지 따지는 비교 연산자 ex) 1 === '1' 은 false 
+
+### 함수 
+
+* Function statement 형 : 일반적 함수의 형태
+
+* Arrow Function expression 형 : 화살표 함수
+ex) const multiply = (a, b) => { return a+b }
+
+---
+
