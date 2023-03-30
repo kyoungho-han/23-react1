@@ -1,5 +1,128 @@
 # 202130134 한경호
 
+## 3/30 5주차
+
+## Element
+* Element의 정의
+    * 리액트 앱을 구성하는 요소를 의미한다
+    * 리액트 앱의 가장 작은 빌딩 블록들
+* Element의 생김새
+    * 리액트 엘리먼트는 자바스크립트 객체의 형태로 존재한다
+    * 컴포넌트, 속성 및 내부의 모든 children을 포함하는 일반 js 객체이다
+    * 이 객체는 마음대로 변경할 수 없는 불변성을 갖고 있다
+    * 버튼을 나타내기 위한 Element ex)
+    ``` javascript
+    {
+        type : 'button',
+        props : {
+            className : 'bg-green' , 
+            children : {
+                type : 'b',
+                props: {
+                    children : 'Hello, element!'
+                }
+            }
+        }
+    }
+    ```
+* Element의 특징
+    * 한 번 생성된 엘리먼트의 children이나 속성을 바꿀 수 없다
+    * 화면에 변경된 엘리먼트들을 보여주기 위해선 새로운 엘리먼트를 만들어야한다
+    * Virtual DOM 개념도
+    <img src="img/Virtual DOM 개념도.gif">
+
+### 엘리먼트 렌더링
+
+```javascript 
+<div id="root"></div> 
+```
+* 위 HTML 코드는 root 라는 id를 가진 div 태그이다
+* 실제로 이 div 태그 안에 리액트 엘리먼트들이 렌더링되며, 이것을 Root DOM node라고 부른다
+
+### 렌더링된 엘리먼트 업데이트하기
+
+* 새로운 엘리먼트를 생성해서 바꿔치기하는 것
+
+### 기본 CDN + 바벨 CDN 사용하기
+
+* 아래 코드를 head태그 안에 작성
+```html
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src=" https://unpkg.com/@babel/standalone/babel.min.js"></script>
+```
+* 아래 코드를 body태그 안에 작성
+```html
+<script type="text/babel">
+```
+
+## 리액트 컴포넌트
+* 리액트는 컴포넌트 기반의 구조와 같다
+*  작은 컴포넌트들이 모여서 하나의 컴포넌트를 구성하고 이러한 컴포넌트들이 모여서 전체 페이지를 구성한 것
+
+### PROPS
+* props는 prop(property: 속성, 특성)의 줄임말
+* 이 props가 컴포넌트의 속성이다
+* 컴포넌트에 어떤 속성, props를 넣느냐에 따라 속성이 다른 엘리먼트가 출력
+* props는 컴포넌트에 전달할 다양한 정보를 담고 있는 자바스크립트 객체이다
+* props는 읽기 전용이며 변경할 수 없다
+
+### PROPS 사용법
+* JSX에서는 key-value쌍으로 props 구성
+```javascript
+function App() {
+    return (
+        <Profile
+            name = "소플"
+            introduction = "안녕하세요, 소플입니다."
+            viewCount = {1500}
+            />
+    );
+}
+```
+1. 위의 코드는 App 컴포넌트에서 props를 인자로 받음
+2. 내부의 profile 컴포넌트로 전달해서 name, introduction. viewCount에 각각 세가지 속성을 넣음
+3. 이렇게 하면 이 속성의 값이 모두 Profile 컴포넌트에 props로 전달되며 props는 아래와 같은 형태의 자바스크립트 객체가 됨
+
+```javascript
+{
+    name = "소플"
+    introduction = "안녕하세요, 소플입니다."
+    viewCount = {1500}
+}
+```
+
+### PURE 함수 / IMPURE 함수
+* pure 함수는 인수로 받은 정보가 함수 내부에서도 변하지 않는 함수
+* impure 함수는 인수로 받은 정보가 함수 내부에서 변하는 함수
+
+### 컴포넌트 종류
+* 함수형 컴포넌트
+```javascript
+function Welcome(props) {
+    return <h1>안녕, {props.name}</h1>
+}
+```
+* 클래스형 컴포넌트
+```javascript
+class Welcome extends React.Component {
+    render() {
+        return <h1>안녕, {this.props.name}</h1>;
+    }
+}
+```
+* 리액트 초기 버전을 사용할 때는 클래스형 컴포넌트를 주로 사용
+* 이후 Hook이라는 개념이 나오면서 함수형 컴포넌트를 주로 사용
+
+### 컴포넌트 합성
+* 여러개의 컴포넌트를 합쳐서 하나의 컴포넌트를 만드는 것
+
+### 컴포넌트 추출
+* 큰 컴포넌트에서 일부를 추출해서 새로운 컴포넌트를 만든다는 것
+* 복잡한 컴포넌트를 쪼개서 여러 개의 컴포넌트로 나눌 수도 있다
+
+---
+
 ## 3/23 4주차
 
 ## React 프로젝트 생성 및 깃 연동하기
