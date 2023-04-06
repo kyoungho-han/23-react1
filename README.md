@@ -1,5 +1,41 @@
 # 202130134 한경호
 
+---
+
+## 4/6 6주차
+
+### 컴포넌트 추출
+* 큰 컴포넌트에서 일부를 추출해서 새로운 컴포넌트를 만든다는 것
+* 복잡한 컴포넌트를 쪼개서 여러 개의 컴포넌트로 나눌 수 도 있다
+* Comment 컴포넌트가 UserInfo 컴포넌트를 포함하고 있고, UserInfo 컴포넌트가 Avatar 컴포넌트를 포함하고 있는 구조. 기능 단위로 구분하는 것이 좋고, 나중에 곧바로 재사용이 가능한 형태로 추출하는 것이 좋음
+
+* <img src="img/component 구조.png" width="250px" height="200px">
+
+
+## State
+
+* State 의미 
+    * State는 리액트 컴포넌트의 상태를 의미
+    * 상태의 의미는 정상인지 비정상인지가 아닌 컴포넌트의 데이터를 의미
+    * 정확히는 컴포넌트의 변경가능한 데이터를 의미
+    * State가 변하면 다시 렌더링이 되기 때문에 렌더링과 관련된 값만 state에 포함시켜야 함
+
+* State 특징
+    * 리액트만의 특별한 형태가 아닌 JavaScript 객체임
+    * 함수형에서는 userState()라는 함수 사용
+    * state를 변경하고자 할때는 setState() 함수를 사용
+
+## 생명주기
+
+* 생명주기는 컴포넌트의 생성 시점, 사용 시점, 종료 시점을 나타내는 것
+* constructor가 실행되면서 컴포넌트가 생성
+* 컴포넌트가 소멸하기 전까지 여러번 렌더링함
+* 렌더링은 props, setState(), forceUpdate() 에 의해 상태가 변경되면 이루어짐
+* 컴포넌트 생성 - componentDidMount() - 렌더링 끝 - componentDidUpdate() - 컴포넌트 언마운트 - componentWillUnmount()
+<img src="img/생명주기.png">
+
+---
+
 ## 3/30 5주차
 
 ## Element
@@ -11,7 +47,7 @@
     * 컴포넌트, 속성 및 내부의 모든 children을 포함하는 일반 js 객체이다
     * 이 객체는 마음대로 변경할 수 없는 불변성을 갖고 있다
     * 버튼을 나타내기 위한 Element ex)
-    ``` javascript
+    ```js
     {
         type : 'button',
         props : {
@@ -33,7 +69,7 @@
 
 ### 엘리먼트 렌더링
 
-```javascript 
+```js
 <div id="root"></div> 
 ```
 * 위 HTML 코드는 root 라는 id를 가진 div 태그이다
@@ -69,7 +105,7 @@
 
 ### PROPS 사용법
 * JSX에서는 key-value쌍으로 props 구성
-```javascript
+```js
 function App() {
     return (
         <Profile
@@ -84,7 +120,7 @@ function App() {
 2. 내부의 profile 컴포넌트로 전달해서 name, introduction. viewCount에 각각 세가지 속성을 넣음
 3. 이렇게 하면 이 속성의 값이 모두 Profile 컴포넌트에 props로 전달되며 props는 아래와 같은 형태의 자바스크립트 객체가 됨
 
-```javascript
+```js
 {
     name = "소플"
     introduction = "안녕하세요, 소플입니다."
@@ -98,13 +134,13 @@ function App() {
 
 ### 컴포넌트 종류
 * 함수형 컴포넌트
-```javascript
+```js
 function Welcome(props) {
     return <h1>안녕, {props.name}</h1>
 }
 ```
 * 클래스형 컴포넌트
-```javascript
+```js
 class Welcome extends React.Component {
     render() {
         return <h1>안녕, {this.props.name}</h1>;
@@ -117,9 +153,6 @@ class Welcome extends React.Component {
 ### 컴포넌트 합성
 * 여러개의 컴포넌트를 합쳐서 하나의 컴포넌트를 만드는 것
 
-### 컴포넌트 추출
-* 큰 컴포넌트에서 일부를 추출해서 새로운 컴포넌트를 만든다는 것
-* 복잡한 컴포넌트를 쪼개서 여러 개의 컴포넌트로 나눌 수도 있다
 
 ---
 
@@ -148,7 +181,7 @@ class Welcome extends React.Component {
 
 * 자바스크립트의 모든 기능이 포함된 자바스크립트의 확장 문법
 * Javascript와 XML/HTML을 합친 것
-```javascript
+```js
 const name = 'Josh Perez';
 const element = <h1>Hello, {name}</h1>;
 
@@ -218,7 +251,7 @@ const element = <h1>Hello, {name}</h1>;
 
 
 #### CDN 링크 
-```javascript
+```js
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 
 
