@@ -1,6 +1,107 @@
 # 202130134 한경호
 
+## 4/27 9주차
+
+## 이벤트 
+* 사용자가 버튼을 클릭하는 등의 사건을 의미
+
+### 이벤트 처리하기
+* DOM의 이벤트
+    * 이벤트의 이름을 모두 소문자로 표시 ex) onclick
+    * 이벤트를 처리할 함수를 문자열로 전달
+* 리액트의 이벤트
+    * 이벤트의 이름을 카멜 표기법으로 표기 ex) onClick
+    * 이벤트를 처리할 함수를 그대로 전달
+* 이벤트 헨들러
+    * 이벤트가 발생했을 때 해당 이벤트를 처리하는 함수
+* jsx 에서 bind를 사용하는 이유는 기본적으로 클래스 함수들이 바운드 되지 않기 때문에 bind를 하지 않으면 this.handleClick은 글로벌 스코프에서 호출되는데 글로벌 스코프에서 thos.handleClick은 undefined이므로 사용할 수가 없다.
+* 함수형 컴포넌트에서 이벤트 처리하기
+```js 
+// 방법 1. 함수 안에 함수로 정의
+function handleClick() {
+    setIsToggleOn((isToggleOn) => !isToggleOn);
+}
+// 방법 2. arrow function을 사용하여 정의
+const handleClick = () => {
+    setIsToggleOn((isToggleOn) => !isToggleOn);
+}
+```
+
+## Arguments 전달하기
+
+* 함수를 정의할 때는 피라미터 혹은 매개변수, 함수를 사용할 때는 아귀먼트 혹은 인자라고 부른다.
+
+```js
+<button onClick={(event) => this.deleteItem(id, event)}>삭제하기</button>
+<button onClick={this.deleteItem.bind(this, id)}>삭제하기</button>
+```
+* 위 코드는 동일한 역할을 하지만 하나는 화살표 함수, 하나는 bind를 사용했고 두 방법 모두 첫 번째 매개변수는 id이고 두 번째 매개변수는 event가 전달됨
+
+## 조건부 렌더링
+
+* 어떠한 조건에 따라서 렌더링이 달라지는 것
+
+```js 
+function Greeting(props) {
+    const isLoggedIn = props.isLoggenIn;
+    if (isLoggedIn) {
+        return <UserGreeting />
+    }
+    return <GuestGreeting />;
+}
+```
+props로 전달 받은 isLoggedIn이 true이면 <UserGreeting />을, false면 <GuestGreeting />을 return 한다.
+
+## 엘리먼트 변수 
+
+* 렌더링해야 될 컴포넌트를 변수처럼 사용하는 방법이 엘리먼트 변수
+
+```js
+if (isLoggedIn) {
+    button = <LogoutButton onClick={handleLogoutClick} />;
+} else {
+    button = <LoginButton onClick={handleLoginClick} />;
+}
+
+return (
+    <div> 
+        <Greeting isLoggedIn={isLoggedIn} />
+        {button}
+    </div>
+)
+```
+
+## 인라인 조건
+
+필요한 곳에 조건문을 직접 넣어 사용하는 방법
+
+1. 인라인 IF
+    * if문을 직접 사용하지 않고, 동일한 효과를 내기 위해 && 논리 연산자를 사용
+    * &&는 and연산자로 모든 조건이 참일때만 참이 됨
+    * 단축평가 : 첫번째 조건이 거짓이면 두번째 조건은 판단할 필요가 없음  
+
+2. 인라인 If-Else
+    * 삼항 연산자를 사용 ex) 조건문 ? 참 : 거짓
+    * 문자열이나 엘리먼트를 넣어서 사용할 수도 있음
+
+## 컴포넌트 렌더링 막기
+
+컴포넌트를 렌더링 하고 싶지 않을 때에는 null을 리턴한다
+
+```js
+function WarningBanner(props) {
+    if (!props.warning) {
+        return null;
+    }
+
+    return (
+        <div>경고!</div>
+    );
+}
+```
+
 ---
+
 
 ## 4/13 7주차
 

@@ -28,7 +28,7 @@ export default class Fruit extends React.Component {
         return (
           <div>
             <h1>어떤 과일을 좋아하나요? {this.state.text}</h1>
-            <button onClick={this.changeTextApple}>사과</button>
+            <button  onClick={this.changeTextApple}>사과</button>
             <button onClick={this.changeTextOrange}>오렌지</button>
             <button onClick={this.changeTextBanana}>바나나</button>
           </div>
