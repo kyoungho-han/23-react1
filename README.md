@@ -1,5 +1,211 @@
 # 202130134 한경호
 
+## 5/04 10주차
+
+## 리스트와 키
+* 리스트는 자바스크립트의 변수나 객체를 하나의 변수로 묶어 놓은 배열
+* 키는 각 객체나 아이템을 구분할 수 있는 고유한 값을 의미
+* 리액트에서 배열과 키를 사용하며 반복되는 다수의 엘리먼트를 쉽게 렌더링 할 수 있음
+* 여러개의 컴포넌트를 렌더링할 때는 map() 함수를 이용함
+
+### map() 함수 예제
+* map()을 이용하여 하나씩 추출하여, 2를 곱한 후 doubled라는 배열에 다시 넣는 코드
+```js 
+const doubled = numbers.map((number) => number * 2);
+```
+ex) 리액트에서 사용하는 경우
+```js
+const numbers = [1, 2, 3, 4, 5];
+const listItems = numbers.map((number) => 
+    <li>{number}</li>
+);
+```
+위 코드는 numbers의 요소에 2를 곱하는 대신 li 태그를 결합해서 리턴하고 리턴된 listItems는 ul태그와 결합하여 렌더링 된다.
+
+### 리액트에서의 리스트와 키
+* 리스트에서의 키는 "리스트 에서 아이템을 구별하기 위한 고유한 문자열"
+* 이 키는 리스트에서 어떤 아이템이 변경, 추가 또는 제거되었는지 구분하기 위해 사용
+* 키는 같은 리스트에 있는 엘리먼트 사이에서만 고유한 값이면 됨
+
+```js
+const numbers = [1, 2, 3, 4, 5];
+const listItems = numbers.map((number) =>
+    <li key={number.toString()}>
+        {number}
+    </li>
+);
+```
+ex) 키 값을 id로 사용하는 경우
+```js
+const todoItems = todos.map((todo) =>
+    <li key={todo.id}>
+        {todo.text}
+    </li>
+);
+```
+
+ex) 키 값으로 인덱스를 사용하는 방법
+* 성능에 부정적인 영향을 끼칠 수 있고 컴포넌트의 state와 관련하여 문제를 일으킬 수 있기 때문에 배열에서 아이템의 순서가 바뀔 수 있는 경우에는 사용하는 것을 권장하지 않음
+```js
+const todoItems = todos.map((todo, index) =>
+    // 아이템들의 고유한 ID가 없을 경우에만 사용해야 함
+    <li key={index}>
+        {todo.text}
+    </li>
+);
+```
+
+## 폼(Form)
+* 폼은 일반적으로 사용자로부터 입력을 받기위한 양식에서 많이 사용
+
+### 제어 컴포넌트 
+* 사용자가 입력한 값에 접근하고 제어할 수 있도록 해주는 컴포넌트
+* 아래 코드는 위에서 나왔던 사용자의 이름을 입력 받는 HTML 폼을 리액트의 제어 컴포넌트로 만든 것
+```js
+function NameForm(props) {
+    const [value, setValue] = useState('');
+
+    const handleChange = (event) => {
+        setValue(event.target.value);
+    }
+
+    const handleChange = (event) => {
+        alert('입력한 이름: ' + value);
+        event.preventDefault();
+}
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <label>
+                이름:
+                <input type="text" value={value} onChange={handleChange}>
+            </label>
+        <button type="submit">제출</button>
+        </form>
+    )
+}
+```
+### textarea 태그
+* html 에서는 textarea의 children으로 들어가는 형태이다
+* 리액트에서는 state를 통해 태그의 value라는 attribute를 변경하여 텍스트를 표시
+```js
+function RequestForm(props) {
+    const [value, setValue] = useState('요청사항을 입력하세요.');
+
+    const handleChange = (event) => {
+        setValue(event.target.value);
+    }
+
+    const handleChange = (event) => {
+        alert('입력한 요청사항: ' + value);
+        event.preventDefault();
+}
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <label>
+                요청사항:
+                <input value={value} onChange={handleChange} />
+            </label>
+            <button type="submit">제출</button>
+        </form>
+    )
+}
+```
+
+### select 태그
+* 드록다운 목록을 보여주기 위한 HTML 태그
+```js
+function FruitSelect(props) {
+    const [value, setValue] = useState('grape');
+
+    const handleChange = (event) => {
+        setValue(event.target.value);
+    }
+
+    const handleChange = (event) => {
+        alert('선택한 과일: ' + value);
+        event.preventDefault();
+}
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <label>
+                과일을 선택하세요:
+                <select value={value} onChange={handleChange}>
+                    <option value="apple">사과</option>
+                    <option value="banana">바나나</option>
+                    <option value="grape">포도</option>
+                    <option value="watermelon">수박</option>
+                </select>
+            </label>
+            <button type="submit">제출</button>
+        </form>
+    )
+}
+```
+### File input 태그
+* 디바이스의 저장 장치로부터 사용자가 하나 또는 여러 개의 파일을 선택할 수 있게 해주는 Html 태그
+```js
+<input type="file" />
+```
+
+### 여러 개의 입력을 다룰 때
+* 여러 개의 입력을 다룰때는 여러 개의 state를 선언하여 각각의 입력에 대해 사용하면 됨
+```js
+function Reservation(props) {
+    const [haveBreakfast, setHaveBreakfast] = useState('true');
+    const [numberOfGuest, setNumberOfGuest] = useState(2);
+
+    const handleChange = (event) => {
+        alert(`아침식사 여부: ${haveBreakfast}, 방문객 수: ${numberOfGuest}`);
+        event.preventDefault();
+}
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <label>
+                아침식사 여부:
+                <input
+                    type="checkbox"
+                    checked={haveBreakfast}
+                    onChange={(event) => {
+                        setHaveBreakfast(event.target.changed);
+                    }} />
+            </label>
+            <br />
+            <label>
+                방문객 수:
+                <input
+                    type="number"
+                    value={numberOfGuest}
+                    onChange={(event) => {
+                        setNumberOfGuest(event.target.value);
+                    }} />
+            </label>
+            <button type="submit">제출</button>
+        </form>
+    );
+}
+```
+
+### Input Null Value
+* 제어 컴포넌트에 value prop을 정해진 값으로 넣으면 코드를 수정하지 않는 한 입력값을 바꿀 수 없음
+* 만약 value prop은 넣되 자유롭게 입력할 수 있게 만들고 싶다면 값이 undefined 또는 null을 넣어주면 됨
+```js
+ReactDom.render(<input value="hi" />, rootNode);
+
+setTimeout(function() {
+    ReactDOM.render(<input value={null} />, rootNode);
+}, 1000);
+```
+
+## Shared State 
+* 공유된 state이며 어떤 컴포넌트의 state에 있는 데이터를 여러 개의 하위 컴포넌트에서 공통적으로 사용하는 경우를 말함
+
+
+---
+
 ## 4/27 9주차
 
 ## 이벤트 
