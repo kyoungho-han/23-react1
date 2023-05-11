@@ -1,6 +1,185 @@
 # 202130134 한경호
 
+## 5/11 11주차
+
+## 하위 컴포넌트에서 State 공유
+
+1. 물의 끓음 여부를 알려주는 컴포넌트
+
+    * 섭씨온도 값을 props로 받아서 물이 끓는지 안 끓는지를 문자열로 출력해 주는 컴포넌트
+    ```js
+        function BoilingVerdict(props) {
+            if (props.celsius >= 100) {
+                return <p>물이 끓습니다.</p>;
+            }
+            return <p>물이 끓지 않습니다.</p>;
+        }
+    ```
+
+    * 위 컴포넌트를 실제로 사용하는 부모 컴포넌트, Calculator
+    ```js
+        function Calculator(props) {
+            const [temperature, setTemperature] = useState('');
+
+            const handleChange = (event) => {
+                setTemperature(event.target.value);
+            }
+            
+            return (
+                <fieldset>
+                    <legend>섭씨 온도를 입력하세요:</legend>
+                    <input
+                        value={temperature}
+                        onChange={handleChange} />
+                    <BoilingVerdict
+                        celsius={parseFloat(temperature)} />
+                </fieldset>
+            )
+        }
+    ```
+
+2. 입력 컴포넌트 추출하기
+
+    * Calculator 컴포넌트 안에 온도를 입력하는 부분을 별도의 컴포넌트로 추출, 온도를 입력받기 위한 TemperatureInput 컴포넌트
+    ```js
+        const scaleNames = {
+            c: '섭씨',
+            f: '화씨'
+        };
+        function TemperatureInput(props) {
+            const [temperature, setTemperature] = useState('');
+
+            const handleChange = (event) => {
+                setTemperature(event.target.value);
+            }
+
+            return (
+                <fieldset>
+                    <legend>온도를 입력해주세요(단위:{scaleNames[props.scale]}):</legend>
+                    <input value = {temperature} onChange={handleChange} />
+                </fieldset>
+            )
+        }
+    ```
+
+    * 추출한 컴포넌트를 사용하도록 Calculator 컴포넌트를 변경
+    ```js
+        function Calculator(props) {
+            return (
+                <div>
+                    <TemperatureInut sclae="c" />
+                    <TemperatureInut sclae="f" />
+                </div>
+            );
+        }
+    ```
+3. 온도 변환 함수 작성하기
+    * 화씨온도를 섭씨온도로 변환하는 함수와 섭씨온도를 화씨온도로 변환하는 함수
+    ```js
+    function toCelsius(fahrenhiet) {
+        return (fahrenheit - 32) * 5 / 9;
+    }
+    function toFahrenheit(celsius) {
+        return (celsius * 9 / 5) + 32;
+    }
+    ```
+
+    * 위의 함수를 호출하는 함수, tryConvert() 함수는 온도 값과 변환하는 함수를 피라미터로 받아서 값을 변환시켜 리턴해주는 함수
+    ```js
+    function tryConvert(temperature, convert) {
+    const input = parseFloat(temperature);
+    if (Number.isNaN(input)) {
+        return "";
+    }
+    const output = convert(input);
+    const rounded = Math.round(output * 1000) / 1000;
+    return rounded.toString();
+    }
+    ```
+
+4. Shared State 적용하기
+    * 하위 컴포넌트의 state를 공통된 부모 컴포넌트로 올려서 shared state를 적용해야 함
+    * 여기서 state를 상위 컴포넌트로 올린다는 것을 State 끌어올리기 라고 표현함
+    * 이를 위해서는 먼저 TemperatureInput 컴포넌트에서 온도 값을 가져오는 부분을 수정해야함
+    ```js 
+        return (
+            // 변경 전 : <input value={temperature} onChange={handleChange} />
+            <input value={props.temperature} onChange={handleChange} />
+        )
+    ```
+
+    * 컴포넌트의 state를 사용하지 않게 되기 때문에 입력값이 변경되었을 때 상위 컴포넌트로 변경된 값을 전달해주기 위해 handleChange() 함수를 변경
+    ```js
+    const handleChange = (event) => {
+        // 변경 전 : setTemperature(event.target.value);
+        props.onTemperatureChange(event.target.value);
+    }
+    ```
+
+    * 최종적으로 완성된 TemperatureInput 컴포넌트
+    ```js
+    function TemperatureInput(props) {
+        const handleChange = (event) => {
+            props.onTemperatureChange(event.target.value);
+        }
+
+
+        return (
+            <fieldset>
+                <legend>온도를 입력해주세요(단위:{scaleNames[props.scale]}):</legend>
+                <input value = {props.temperature} onChange={handleChange} />
+            </fieldset>
+        )
+    }
+    ```
+
+5. Calculator 컴포넌트 변경하기
+
+    * state로 temperature와 sclae을 선언하여 온도 값과 단위를 각각 저장하도록 함
+    * TemperatureInput 컴포넌트를 사용하는 부분에서는 각 단위로 변환된 온도 값과 단위를 props로 넣어 주었고, 값이 변경되었을 때 업데이트하기 위한 함수를 onTemperatureChange에 넣어 주었음   
+    ```js
+    function Calculator(props) {
+        const [temperature, setTemperature] = useState("");
+        const [scale, setScale] = useState("c");
+
+        const handleCelsiusChange = (temperature) => {
+            setTemperature(temperature);
+            setScale("c");
+        };
+
+        const handleFahrenheitChange = (temperature) => {
+            setTemperature(temperature);
+            setScale("f");
+        };
+
+        const celsius =
+            scale === "f" ? tryConvert(temperature, toCelsius) : temperature;
+        const fahrenheit =
+            scale === "c" ? tryConvert(temperature, toFahrenheit) : temperature;
+
+        return (
+            <div>
+                <TemperatureInput
+                    scale="c"
+                    temperature={celsius}
+                    onTemperatureChange={handleCelsiusChange}
+                />
+                <TemperatureInput
+                    scale="f"
+                    temperature={fahrenheit}
+                    onTemperatureChange={handleFahrenheitChange}
+                />
+                <BoilingVerdict celsius={parseFloat(celsius)} />
+            </div>
+        );
+    }
+    ```
+
+
+---
+
 ## 5/04 10주차
+
 
 ## 리스트와 키
 * 리스트는 자바스크립트의 변수나 객체를 하나의 변수로 묶어 놓은 배열
