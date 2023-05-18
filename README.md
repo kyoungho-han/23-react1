@@ -1,8 +1,495 @@
 # 202130134 한경호
 
+## 5/18 12주차
+
+<br>
+
+## 합성
+
+* 합성은 여러 개의 컴포넌트를 합쳐서 새로운 컴포넌트를 만드는 것
+
+* 조합 방법에 따라 합성의 사용 기법은 다음과 같이 나눌 수 있습니다
+
+### Containment 
+* 하위 컴포넌트를 포함하는 형태의 합성 방법
+
+* 해당 컴포넌트를 사용하는 개발자가 어떤 것을 넣느냐에 따라 달라지기 때문에 보통 사이드바나 다이얼로그 같은 박스 형태의 컴포넌트는 자신의 하위 컴포넌트를 미리 알 수 없다. 따라서 Containment 방법을 사용하고 사용 방법은 리액트 컴포넌트의 props에 기본적으로 들어있는 children 속성을 사용하면 된다.
+
+```js
+function FancyBorder(props) {
+    return (
+        <div className={'FancyBorder FancyBorder-' + props.color}>
+            {props.childern}
+        </div>
+    );
+}
+```
+<br>
+
+#### React.createElement : JSX를 사용하지 않고 리액트로 엘리먼트를 생성하는 방법
+
+```js
+// 리액트 기능을 사용한 방법
+const reactElement = React.createElement(
+    'h1', // tag
+    {className: 'obj'}, // props
+    'OBJ Element' // child element
+)
+```
+
+<br>
+
+#### 위의 FancyBorder 컴포넌트를 사용하는 예제
+
+```js
+function WelconmeDialog(props) {
+    return (
+        <FancyBorder color="blue">
+            <h1 className="Dialog-title">
+                어서오세요
+            </h1>
+             <p className="Dialog-message">            
+                우리 사이트에 방문하신 것을 환영합니다!
+            </p>
+        </FancyBorder>
+    );
+}
+```
+
+* 위 코드에서는 WelcomeDialog 라는 컴포넌트가 나오고 여기에 FancyBorder 컴포넌트를 사용
+
+* FancyBorder 컴포넌트로 감싸진 부분안에는 h1, p 태그가 들어가 있음
+
+* 두 태그는 모두 FancyBorder 컴포넌트에 children 이라는 이름의 props로 전달
+
+<br>
+
+#### 여러개의 children 집합이 필요한 경우
+
+* 별도로 props를 정의해서 각각 원하는 컴포넌트를 넣어준다.
+
+```js
+function spiltPane(props) {
+    return (
+    <div className="SplitPane">
+        <div className="SplitPane-left">
+            {props.left}
+        </div>
+        <div className="SplitPane-right">
+            {props.right}
+        </div>
+    </div>
+    );
+}
+
+function App(props) {
+    return (
+        <SplitPane
+            left={
+                <Contacts />
+            }
+            right={
+                <Chat />
+            }
+        />
+    );
+}
+```
+
+* SplitPane은 화면을 왼쪽과 오른쪽으로 분할해서 보여주는 컴포넌트이다.
+
+* 여기서 left, right라는 두 개의 props를 정의하여 그 안에 각각 다른 컴포넌트를 넣어줌
+
+* SplitPane에서는 left, right를 props로 받고 각각의 화면의 왼쪽과 오른쪽을 분리해서 렌더링
+
+* 이처럼 여러 개의 children 집합이 필요한 경우 별도의 props를 정의해 사용
+
+<br>
+
+### Specialization
+
+* 범용적으로 쓸 수 있는 컴포넌트를 만들어 놓고 이를 특수화 시켜서 컴포넌트를 사용하는 방식
+
+* 범용적인 개념을 구별이 되게 구체화하는 것을 Specialization(전문화, 특수화)라고 한다.
+
+* 웰컴다이얼로그는 다이얼로그의 특별한 케이스이다.
+
+* 객체지향 언어에서는 상속을 사용하여 특수화를 구현한다.
+
+* 리액트에서는 합성을 사용하여 특수화를 구현한다.
+
+```js
+function Dialog(props) {
+    return (
+        <FancyBorder color="blue">
+            <h1 className="Dialog-title">
+                {props.title}
+            </h1>
+            <p className="Dialog-message">
+                {props.message}
+            </p>            
+        </FancyBorder>
+    );
+}
+
+function WelconmeDialog(props) {
+    return (
+        <Dialog
+            title="어서오세요"
+            message="우리 사이트에 방문하신 것을 환영합니다!"
+            />
+    );
+}
+```
+
+* 먼저 Dialog 라는 범용적인 의미를 가진 컴포넌트가 나온 후 이 Dialog 컴포넌트를 사용하는 WelcomeDialog 컴포넌트가 나옴
+
+* Dialog 컴포넌트는 title과 message라는 두 props를 갖고 있는데 각각 다이얼로그에 나오는 제목과 메세지를 의미
+
+* WelcomeDialog 컴포넌트에서는 제목을 '어서오세요' 라고 짓고 사이트에 접속한 사용자에게 인사말을 하는 다이얼로그를 만듬
+
+<br>
+
+### Containment와 Specialization을 같이 사용하기
+
+* Containment를 위해서 props.children를 사용하고 Specialization을 위해 직접 정의한 props를 사용
+
+```js
+function Dialog(props) {
+    return (
+        <FancyBorder color="blue">
+            <h1 className="Dialog-title">
+                {props.title}
+            </h1>
+            <p className="Dialog-message">
+                {props.message}
+            </p>
+            <props.children>
+        </FancyBorder>
+    );
+}
+
+function SignUpDialog(props) {
+    const [nickname, setNickname] = useState('');
+
+    const handleChange = (event) => {
+        setNickname(event.target.value);
+    }
+
+    const handleSignup = () => {
+        alert(`어서 오세요, ${nuckname}님!`);
+    }
+
+    return (
+        <Dialog
+            title="화성 탐사 프로그램"
+            message="닉네임을 입력해 주세요.">
+            <input 
+                value={nickname}
+                onChange={handleChange} />
+            <button onClick={handleSignUp}>
+                가입하기
+            </button>
+        </Dialog>
+    );
+}
+```
+* Dialog 컴포넌트는 Containment를 위해 끝부분에 props.children를 추가했고 이를 통해 하위 컴포넌트가 다이얼로그 하단에 렌더링된다.
+
+* Dialog 컴포넌트를 사용하는 SignUpDialog 컴포넌트를 살펴보면 Specialization을 위한 props인 title, message에 값을 넣어 주고 있으며 사용자로부터 닉네임을 입력받고 가입하도록 유도하는 input과 button 태그가 있다.
+
+* 두 태그 모두 props.children 으로 전달되어 다이얼로그에 표시되고 이러한 형태로 Containment와 Specialization을 동시에 사용할 수 있다.
+
+<br>
+
+### 상속이란
+
+* 합성과 대비되는 개념
+
+* 자식 클래스는 부모 클래스가 가진 변수나 함수 등의 속성을 모두 갖게 되는 개념
+
+* 리액트에서는 상속보다는 합성을 통해 새로운 컴포넌트를 생성
+
+<br><br>
+
+## 컨텍스트
+
+* 기존의 일반적인 리액트에서는 데이터가 컴포넌트의 props를 통해 부모에서 지식으로 단방향으로 전달되었다
+
+* 컨텍스트는 리액트 컴포넌트들 사이에서 데이터를 기존의 proprs를 통해 전달하는 당식 대신 '컴포넌트 트리를 통해 곧바로 컴포넌트에 전달하는 새로운 방식'을 제공한다.
+
+* 이 것을 통해 어떤 컴포넌트라도 쉽게 데이터에 접근 가능
+
+* 컨텍스트를 사용하면 일일이 props로 전달할 필요 없이 그림처럼 데이터를 필요로 하는 컴포넌트에 곧바로 데이터를 전달할 수 있다.
+
+* props를 사용한 기존 방식 
+* <img src="img/origin.png" width="400px" height="200px">
+
+* 컨텍스트를 사용한 방식
+* <img src="img/context.png" width="400px" height="200px">
+
+<br>
+
+### 컨텍스트를 사용해야할 때
+
+* 여러 컴포넌트에서 자주 필요로 하는 데이터는 로그인 여부, 로그인 정보, UI테마, 현재 선택된 언어 등이 있음
+
+* 이러한 데이터들은 기존 방식대로 컴포넌트의 props를 통해 넘겨주게 되면 자식 컴포넌트의 자식 컴포넌트까지 계속해서 내려갈 수 밖에 없음
+
+<br>
+
+1. 현재 선택된 테마를 기존 방식대로 컴포넌트의 props로 전달하는 예제
+
+```js
+function App(props) {
+    return <Toolbar theme="dark" />;
+}
+
+function Toolbar(props) {
+    // 이 Toolbar 컴포넌트는 ThemedButton에 theme를 넘겨주기 위해서 'theme' prop을 가져야만 한다.
+    // 현재 테마를 알아야 하는 모든 버튼에 대해서 props로 전달하는 것은 굉장히 비효율적이다.
+    return (
+        <div>
+            <ThemeButton theme={props.theme} />
+        </div>
+    );
+}
+
+function ThemedButton(props) {
+    return <Button theme={props.theme} />
+}
+```
+* 위 코드에서는 총 3개의 컴포넌트를 사용하고 가장 상위 컴포넌트인 App 컴포넌트에서는 Toolbar 컴포넌트를 사용하고 있음
+
+* 이때 theme라는 이름의 prop으로 현제 태마인 dark를 넘김
+
+* Toolbar 컴포넌트에서는 ThemedButton 컴포넌트를 사용하는데 ThemedButton 컴포넌트에서 현재 테마를 필요로 하기 때문에 prop으로 받은 theme를 하위 컴포넌트인 ThemedButton 컴포넌트에 전달
+
+* 최종적으로 ThemedButton 컴포넌트에서는 props.theme로 데이터에 접근해 버튼에 어두운 테마를 입힘
+
+* 예제에서 처럼 props를 통해 데이터를 전달하는 기존 방식은 실제 데이터를 필요로 하는 컴포넌트까지의 깊이가 깊어질 수록 복잡해짐
+
+* 또한 반복적인 코드를 계속해서 사용해 가독성이 떨어지며 비효율적임
+
+<br>
+
+2. 컨텍스트를 사용하여 위와 동일한 기능을 구현한 예제
+
+```js
+    // 컨텍스트는 데이터를 매번 컴포넌트를 통해 전달할 필요 없이 컴포넌트 트리로 곧바로 전달하게 해줌.
+    // 여기에서는 현재 테마를 위한 컨텍스트를 생성하며, 기본값은 'light'이다.
+    const ThemeContect = React.createContext('light');
+
+    // Provider를 사용하여 하위 컴포넌트들에게 현재 테마 데이터를 전달.
+    // 모든 하위 컴포넌트들은 컴포넌트 트리 하단에 얼마나 깊이 있는지에 관계없이 데이터를 읽을 수 있다.
+    // 여기에서는 현재 테마값으로 'dark'를 전달하고 있다.
+    function App(props) {
+        return (
+            <ThemeContext.Provider value="dark">
+                <Toolbar />
+            <ThemeContext.Provider>
+        );
+    }
+
+    function Toolbar(props) {
+         // 이제 중간에 위치한 컴포넌트는 테마 데이터를 하위 컴포넌트로 전달할 필요가 없다.
+        return (
+            <div>
+                <ThemedButton />
+            </div>
+        );
+    }
+
+    function ThemedButton(props) {
+        // 리액트는 가장 가까운 상위 테마 Provider를 찾아서 해당되는 값을 사용
+        // 만약 해당되는 Provider가 없을 경우 기본값(여기에서는 'light')을 사용
+        // 여기에서는 상위 Provider가 있기 때문에 현재 테마의 값은 'dark'가 된다.
+
+        return (
+            <ThemeContext.Consumer>
+                {value => <Button theme={value} />}
+            </ThemeContext.Consumer>
+        );
+    }
+    
+```
+
+* 위 코드에서는 먼저 React.createContext() 함수를 사용해 ThemeContext라는 이름의 컨텍스트를 하나 생성
+
+* 컨텍스트를 사용할 컴포넌트의 상위 컴포넌트에서 Provider로 감싸주어야 하는데 여기선 최상위 컴포넌트인 App 컴포넌트를 ThemeContext.Provider로 감싸줌
+
+* 이렇게 하면 Provider의 모든 하위 컴포넌트가 얼마나 깊이 위치해 있는지 관계없이 컨텍스트의 데이터를 읽을 수 있음.
+
+* 이처럼 여러 컴포넌트에서 계속 접은이 일어날 수 있는 데이터들이 있는 경우에 컨텍스트를 사용하는 것이 좋음
+
+<br>
+
+### 컨텍스트를 사용하기전 고려해야할 점
+
+* 컨텍스트는 다른 레벨의 많은 컴포넌트가 특정 데이터를 필요로 하는 경우에 주로 사용
+
+* 컴포넌트와 컨텍스트가 연동되면 재사용이 떨어지기 때문에 무조건 컨텍스트를 사용하는 것이 좋은 것은 아님
+
+* 따라서 다른 레벨의 많은 컴포넌트가 에디터를 필요로 하는 경우가 아니면 props를 통해 데이터를 전달하는 컴포넌트 합성 방법이 더 적합하다.
+
+```js
+// Page 컴포넌트는 PageLayout 컴포넌트를 렌더링
+<Page user={user} avatarSize={avatarSize} />
+
+// PageLayout 컴포넌트는 NavigationBar 컴포넌트를 렌더링
+<PageLayout user={user} avatarSize={avatarSize} />
+
+// NavigationBar 컴포넌트는 Link 컴포넌트를 렌더링
+<NavigationBar user={user} avatarSize={avatarSize} />
+
+// Link 컴포넌트는 Avatar 컴포넌트를 렌더링
+<Link href={user.permalink}>
+    <Avatar user={user} size={avatarSize} />
+</Link>
+```
+* 위의 코드는 사용자 정보와 아바타 사이즈를 몇 단계에 걸쳐서 하위 컴포넌트인 Link와 Avatar로 전달하는 Page 컴포넌트가 있다.
+
+* 여기에서 가장 하위 레벨에 위치한 Avatar 컴포넌트가 user와 avatarSize를 필요로 하기 때문에, 이를 위해 여러 단계에 걸쳐서 props를 통해 user와 avatarSize를 전달해 주고 있다.
+
+* 하지만 이 과정은 불필요한 부분이 많고 Avatar 컴포넌트에 추가적인 데이터가 필요해지면 해당 데이터도 추가로 여러 단계에 걸쳐서 넘겨주어야 하기 때문에 굉장히 번거로움
+
+<br>
+
+### 위의 문제를 해결하기 위한 방법
+
+<br>
+
+1. Avatar 컴포넌트를 변수에 저장하여 직접 넘겨주기
+
+```js
+function Page(props) {
+    const user = props.user;
+
+    const userLink = (
+        <Link href={user.permalink}>
+            <Avatar user={user} size={props.avatarSize}/>
+        </Link>
+    );
+
+    // Page 컴포넌트는 PageLayout 컴포넌트를 렌더링
+    // 이때 props로 userLink를 함께 전달
+    return <PageLayout userLink={userLink} />;
+}
+
+// PageLayout 컴포넌트는 NavigationBar 컴포넌트를 렌더링
+<PageLayout userLink={...} />
+
+// NavigationBar 컴포넌트는 props로 전달받은 userLink element를 리턴
+<NavigationBar userLink={...} />
+```
+
+* 위 코드에서는 user와 avatarSize가 props로 들어간 Avatar 컴포넌트를 userLink라는 변수에 저장한 뒤에 해당 변수를 하위 컴포넌트로 넘기고 있다.
+
+* 이렇게 하면 가장 상위 레벨에 있는 Page 컴포넌트만 Avatar 컴포넌트에서 필요로 하는 user와 avatarSize에 대해 알고 있으면 됨
+
+* 이런 방식은 중간 레벨의 컴포넌트를 통해 전달해야 하는 props를 없애고, 코드를 더욱 간결하게 만들어줌
+
+* 다만 모든 상황에 이 방식이 좋은 것은 아니다. 데이터가 많아질수록 상위컴포넌트에 몰리기 때문에 상위 컴포넌트는 점점 더 복잡해지고, 하위 컴포넌트는 너무 유연해지게 되기 때문이다.
+
+<br>
+
+2. 하위 컴포넌트를 여러 개의 변수로 나누어 전달하기
+
+```js
+function Page(props) {
+    const user = props.user;
+
+    const topBar = (
+        <NavigationBar>
+            <Link href={user.permalink}>
+                <Avatar user={user} size={props.avatarSize} />
+            </Link>
+        </NavigationBar> 
+    );
+    const content = <Feed user={user} />;
+
+    return (
+        <PageLayout
+            topBar={topBar}
+            content={content}
+        />
+    );
+}
+```
+
+* 이 방식은 하위 컴포넌트의 의존성을 사우이 컴포넌트와 분리할 필요가 있는 대부분의 경우에 적합한 방법
+
+* 또한 렌더링 전에 하위 컴포넌트가 상위 컴포넌트와 통신해야 하는 경우 render props를 사용하여 처리할 수도 있음
+
+<br>
+
+### 컨텍스트 API
+<br>
+1. React.createContext
+
+* React.createContext() 함수를 이용해 컨텍스트를 생성하는 방법
+
+```js
+const MyContext = React.createContext(기본값);
+```
+
+* 리액트에서 렌더링이 일어날 때 컨텍스트 객체를 구독하는 하위 컴포넌트가 나오면 현재 컨텍스트의 값을 가장 가까이에 있는 상위 레벨의 Provider로부터 받아옴
+
+* 그런데 만약 상위 레벨에 매칭되는 Provider가 없다면, 이경우에만 기본값이 사용됨
+
+* 참고로 기본값으로 undefined를 넣으면 기본값이 사용되지 않음
+
+<br>
+2. Context.Provider
+
+* Context.Provider 컴포넌트로 하위 컴포넌트들을 감싸주면 모든 하위 컴포넌트들이 해당 컨텍스트의 데이터에 접근할 수 있게 된다.
+
+* Provider는 아래 코드처럼 사용 가능
+
+```js 
+<MyContext.Provider value={/* some value */}>
+```
+
+* Provider 컴포넌트에는 value라는 prop이 있으며, 이것은 Provider 컴포넌트 하위에 있는 컴포넌트들에게 전달됨
+
+* 그리고 하위 컴포넌트들이 이 값을 사용하게 되는데 하위 컴포넌트가 데이터를 소비한다는 의미를 가지고 있어 consumer 컴포넌트라고 부름
+
+<br>
+3. Class.ContextType
+
+* Class.contextType은 Provider 하위에 있는 클래스 컴포넌트에서 컨텍스트의 데이터에 접근하기 위해 사용하는 것
+
+* MyClass.contextType = MyContext; 라고 해주면 MyClass 라는 클래스 컴포넌트는 MyContext의 데이터에 접근 가능
+
+<br>
+4. Context.Consumer
+
+* 컨텍스트의 데이터를 구독하는 컴포넌트
+
+```js
+<MyContext.Consumer>
+    {value => /* 컨텍스트의 값에 따라서 컴포넌트들을 렌더링 */}
+<MyContext.Consumer>
+```
+
+* 컴포넌트의 자식으로 함수가 올 수 있는데 이것을 function as a child 라고 부름
+
+<br>
+5. ContextDisplayName
+
+* 컨텍스트 객체는 displayName 이라는 문자열 속성을 가짐.
+
+* 또한 크롬의 리액트 개발자 도구에서는 컨텍스트의 Provider나 Consumer를 표시할 때 이 displayName을 함께 표시해준다.
+
+---
+
 ## 5/11 11주차
 
+<br>
+
 ## 하위 컴포넌트에서 State 공유
+
+<br>
 
 1. 물의 끓음 여부를 알려주는 컴포넌트
 
@@ -37,6 +524,7 @@
             )
         }
     ```
+<br>
 
 2. 입력 컴포넌트 추출하기
 
@@ -73,6 +561,9 @@
             );
         }
     ```
+
+ <br>
+
 3. 온도 변환 함수 작성하기
     * 화씨온도를 섭씨온도로 변환하는 함수와 섭씨온도를 화씨온도로 변환하는 함수
     ```js
@@ -96,6 +587,8 @@
     return rounded.toString();
     }
     ```
+
+<br>
 
 4. Shared State 적용하기
     * 하위 컴포넌트의 state를 공통된 부모 컴포넌트로 올려서 shared state를 적용해야 함
@@ -133,9 +626,12 @@
     }
     ```
 
+<br>
+
 5. Calculator 컴포넌트 변경하기
 
     * state로 temperature와 sclae을 선언하여 온도 값과 단위를 각각 저장하도록 함
+
     * TemperatureInput 컴포넌트를 사용하는 부분에서는 각 단위로 변환된 온도 값과 단위를 props로 넣어 주었고, 값이 변경되었을 때 업데이트하기 위한 함수를 onTemperatureChange에 넣어 주었음   
     ```js
     function Calculator(props) {
@@ -182,28 +678,42 @@
 
 
 ## 리스트와 키
+
 * 리스트는 자바스크립트의 변수나 객체를 하나의 변수로 묶어 놓은 배열
+
 * 키는 각 객체나 아이템을 구분할 수 있는 고유한 값을 의미
+
 * 리액트에서 배열과 키를 사용하며 반복되는 다수의 엘리먼트를 쉽게 렌더링 할 수 있음
+
 * 여러개의 컴포넌트를 렌더링할 때는 map() 함수를 이용함
 
 ### map() 함수 예제
+
 * map()을 이용하여 하나씩 추출하여, 2를 곱한 후 doubled라는 배열에 다시 넣는 코드
+
 ```js 
 const doubled = numbers.map((number) => number * 2);
 ```
+
+<br>
+
 ex) 리액트에서 사용하는 경우
+
 ```js
 const numbers = [1, 2, 3, 4, 5];
 const listItems = numbers.map((number) => 
     <li>{number}</li>
 );
 ```
+
 위 코드는 numbers의 요소에 2를 곱하는 대신 li 태그를 결합해서 리턴하고 리턴된 listItems는 ul태그와 결합하여 렌더링 된다.
 
 ### 리액트에서의 리스트와 키
+
 * 리스트에서의 키는 "리스트 에서 아이템을 구별하기 위한 고유한 문자열"
+
 * 이 키는 리스트에서 어떤 아이템이 변경, 추가 또는 제거되었는지 구분하기 위해 사용
+
 * 키는 같은 리스트에 있는 엘리먼트 사이에서만 고유한 값이면 됨
 
 ```js
@@ -224,7 +734,9 @@ const todoItems = todos.map((todo) =>
 ```
 
 ex) 키 값으로 인덱스를 사용하는 방법
+
 * 성능에 부정적인 영향을 끼칠 수 있고 컴포넌트의 state와 관련하여 문제를 일으킬 수 있기 때문에 배열에서 아이템의 순서가 바뀔 수 있는 경우에는 사용하는 것을 권장하지 않음
+
 ```js
 const todoItems = todos.map((todo, index) =>
     // 아이템들의 고유한 ID가 없을 경우에만 사용해야 함
@@ -235,11 +747,15 @@ const todoItems = todos.map((todo, index) =>
 ```
 
 ## 폼(Form)
+
 * 폼은 일반적으로 사용자로부터 입력을 받기위한 양식에서 많이 사용
 
 ### 제어 컴포넌트 
+
 * 사용자가 입력한 값에 접근하고 제어할 수 있도록 해주는 컴포넌트
+
 * 아래 코드는 위에서 나왔던 사용자의 이름을 입력 받는 HTML 폼을 리액트의 제어 컴포넌트로 만든 것
+
 ```js
 function NameForm(props) {
     const [value, setValue] = useState('');
@@ -264,9 +780,14 @@ function NameForm(props) {
     )
 }
 ```
+<br>
+
 ### textarea 태그
+
 * html 에서는 textarea의 children으로 들어가는 형태이다
+
 * 리액트에서는 state를 통해 태그의 value라는 attribute를 변경하여 텍스트를 표시
+
 ```js
 function RequestForm(props) {
     const [value, setValue] = useState('요청사항을 입력하세요.');
@@ -291,9 +812,12 @@ function RequestForm(props) {
     )
 }
 ```
+<br>
 
 ### select 태그
+
 * 드록다운 목록을 보여주기 위한 HTML 태그
+
 ```js
 function FruitSelect(props) {
     const [value, setValue] = useState('grape');
@@ -323,14 +847,22 @@ function FruitSelect(props) {
     )
 }
 ```
+
+<br>
+
 ### File input 태그
+
 * 디바이스의 저장 장치로부터 사용자가 하나 또는 여러 개의 파일을 선택할 수 있게 해주는 Html 태그
 ```js
 <input type="file" />
 ```
 
+<br>
+
 ### 여러 개의 입력을 다룰 때
+
 * 여러 개의 입력을 다룰때는 여러 개의 state를 선언하여 각각의 입력에 대해 사용하면 됨
+
 ```js
 function Reservation(props) {
     const [haveBreakfast, setHaveBreakfast] = useState('true');
@@ -369,8 +901,11 @@ function Reservation(props) {
 ```
 
 ### Input Null Value
+
 * 제어 컴포넌트에 value prop을 정해진 값으로 넣으면 코드를 수정하지 않는 한 입력값을 바꿀 수 없음
+
 * 만약 value prop은 넣되 자유롭게 입력할 수 있게 만들고 싶다면 값이 undefined 또는 null을 넣어주면 됨
+
 ```js
 ReactDom.render(<input value="hi" />, rootNode);
 
@@ -380,6 +915,7 @@ setTimeout(function() {
 ```
 
 ## Shared State 
+
 * 공유된 state이며 어떤 컴포넌트의 state에 있는 데이터를 여러 개의 하위 컴포넌트에서 공통적으로 사용하는 경우를 말함
 
 
@@ -388,19 +924,26 @@ setTimeout(function() {
 ## 4/27 9주차
 
 ## 이벤트 
+
 * 사용자가 버튼을 클릭하는 등의 사건을 의미
 
 ### 이벤트 처리하기
+
 * DOM의 이벤트
     * 이벤트의 이름을 모두 소문자로 표시 ex) onclick
     * 이벤트를 처리할 함수를 문자열로 전달
+
 * 리액트의 이벤트
     * 이벤트의 이름을 카멜 표기법으로 표기 ex) onClick
     * 이벤트를 처리할 함수를 그대로 전달
+
 * 이벤트 헨들러
     * 이벤트가 발생했을 때 해당 이벤트를 처리하는 함수
+
 * jsx 에서 bind를 사용하는 이유는 기본적으로 클래스 함수들이 바운드 되지 않기 때문에 bind를 하지 않으면 this.handleClick은 글로벌 스코프에서 호출되는데 글로벌 스코프에서 thos.handleClick은 undefined이므로 사용할 수가 없다.
+
 * 함수형 컴포넌트에서 이벤트 처리하기
+
 ```js 
 // 방법 1. 함수 안에 함수로 정의
 function handleClick() {
@@ -411,6 +954,7 @@ const handleClick = () => {
     setIsToggleOn((isToggleOn) => !isToggleOn);
 }
 ```
+<br>
 
 ## Arguments 전달하기
 
@@ -420,6 +964,7 @@ const handleClick = () => {
 <button onClick={(event) => this.deleteItem(id, event)}>삭제하기</button>
 <button onClick={this.deleteItem.bind(this, id)}>삭제하기</button>
 ```
+
 * 위 코드는 동일한 역할을 하지만 하나는 화살표 함수, 하나는 bind를 사용했고 두 방법 모두 첫 번째 매개변수는 id이고 두 번째 매개변수는 event가 전달됨
 
 ## 조건부 렌더링
@@ -436,6 +981,8 @@ function Greeting(props) {
 }
 ```
 props로 전달 받은 isLoggedIn이 true이면 <UserGreeting />을, false면 <GuestGreeting />을 return 한다.
+
+<br>
 
 ## 엘리먼트 변수 
 
@@ -455,6 +1002,7 @@ return (
     </div>
 )
 ```
+<br>
 
 ## 인라인 조건
 
@@ -494,12 +1042,17 @@ function WarningBanner(props) {
 
 * Hook이란? 
     * 클래스형 컴포넌트에서는 생성자에서 state를 정의하고, setState() 함수를 통해 state를 업데이트한다
+    
     * 예전에 사용하던 함수형 컴포넌트는 별도로 state를 정의하거나, 컴포넌트의 생명주기에 맞춰서 어떤 코드도 실행 불가했으나 함수형 컴포넌트에서도 state나 생명주기 함수의 기능을 사용하기 위해 추가된 기능이 바로 훅(Hook) 이다.
+
     * Hook : state와 생명주기 기능에 갈고리를 걸어 원하는 시점에 정해진 함수를 실행되도록 만든 함수
+
     * Hook의 이름은 모두 'use'로 시작
 
 ## useState 
+
 * 함수형 컴포넌트에서 state를 사용하기 위한 Hook
+
 * 사용법 : const [변수명, set함수명]  = useState(초깃값);
 ```js
     import React, {useState} from "react";
@@ -518,12 +1071,20 @@ function WarningBanner(props) {
     }
 ```
 
+<br>
+
 ## useEffect
+
 * useState와 함께 가장 많이 사용하는 Hook
+
 * 사이드 이펙트를 수행하기 위한 것
+
 * 이 작업을 이펙트라고 부르는 이유는 이 작업들이 다른 컴포넌트에 영향을 미칠 수 있으며, 렌더링 중에는 작업이 완료될 수 없기 때문이다
+
 * 렌더링이 끝난 이후에 실행되어야 하는 작업들
+
 * 클래스 컴포넌트의 생명주기 함수와 같은 기능을 하나로 통합한 기능 제공
+
 * 사용법 : useEffect(이펙트 함수, 의존성 배열);
     
 
@@ -549,15 +1110,25 @@ function WarningBanner(props) {
 ```
 
 * 의존성 배열은 이펙트가 의존하고 있는 배열로, 배열 안에 있는 변수 중에 하나라도 값이 변경되었을 때 이펙트 함수가 실행된다
+
 * 이펙트 함수는 처음 컴포넌트가 렌더링 된 이후, 그리고 재 렌더링 이후에 실행
+
 * 만약 이펙트 함수가 마운트와 언마운트 될 때만 한번씩 실행되게 하고 싶으면 빈 배열을 넣으면된다
+
 * useEffect()에서 리턴하는 함수는 컴포넌트가 마운트 해제될 때 호출된다
 
+<br>
+
 ## useMemo
+
 * useMemo() 훅은 Memoizde value를 리턴하는 훅
+
 * 이전 계산값을 갖고 있기 때문에 연산량이 많은 작업의 반복을 피할 수 있다
+
 * 이 훅은 렌더링이 일어나는 동안 실행된다
+
 * 따라서 렌더링이 일어나는 동안 실행되어서는 안될 작업을 넣으면 안된다
+
 ```js
     const memoizedValue = useMemo(
         () => {
@@ -567,12 +1138,19 @@ function WarningBanner(props) {
     );
 ```
 
+<br>
+
 ## useCallback 
 * useCallback() 훅은 useMemo()와 유사한 역할
+
 * 차이점은 값이 아닌 함수를 반환
+
 * 의존성 배열을 피마리터로 받는 것은 useMemo 와 동일
+
 * 피라미터로 받은 함수를 콜백이라 부름
+
 * useMemo와 마찬가지로 의존성 배열 중 하나라도 변경되면 콜백함수를 반환
+
 ```js
     const memoizedValue = useCallback(
         () => {
@@ -581,29 +1159,50 @@ function WarningBanner(props) {
         [의존성 변수1, 의존성 변수2]
     );
 ```
+
+<br>
+
 ## useRef
+
 * useRef() 훅은 레퍼런스를 사용하기 위한 훅이다
+
 * 레퍼런스란 특정 컴포넌트에 접근할 수 있는 객체를 의미
+
 * useRef() 훅은 바로 이 레퍼런스 객체를 반환
+
 * 레퍼런스 객체에는 .current라는 속성이 있는데, 이것은 현재 참조하고 있는 엘리먼트를 의미
+
 ```js
 const refContainer = useRef(초깃값);
 ```
 
 ## 훅의 규칙
+
 1. 무조건 최상위 레벨에서만 호출해야 한다는 것
+
     * 반복문이나 조건문 또는 중첩된 함수들 안에서 훅을 호출 불가
+
     * 컴포넌트가 렌더링 될때마다 같은 순서로 호출되어야 함
+
 2. 리액트 함수 컴포넌트에서만 훅을 호출해야 함
+
     * 일반 자바스크립트 함수에서 훅을 호출하면 안됨
+
     * 훅은 리액트 함수 컴포넌트 or 직접 만든 커스텀 훅에서만 호출 가능
 
+
+<br>
+
 ## 커스텀 훅
+
 * 리액트에서 기본적으로 제공되는 훅을 이외에 추가적으로 필요한 기능이 있다면 직접 훅을 만들어서 사용할 수 있다
 
 ### 커스텀 훅 추출
+
 * 두 개의 자바스크립트 함수에서 하나의 로직을 공유하도록 하고 싶을 때 새로운 함수를 하나 만드는 방법을 사용
+
 * 리액트 컴포넌트와 훅은 모두 함수이기 때문에 동일한 방법을 사용할 수 있다
+
 * 이름을 use로 시작하고, 내부에서 다른 훅을 호출하는 자바스크립트 함수를 만들면 됨
 
 ---
@@ -611,6 +1210,7 @@ const refContainer = useRef(초깃값);
 ## 4/6 6주차
 
 ### 컴포넌트 추출
+
 * 큰 컴포넌트에서 일부를 추출해서 새로운 컴포넌트를 만든다는 것
 * 복잡한 컴포넌트를 쪼개서 여러 개의 컴포넌트로 나눌 수 도 있다
 * Comment 컴포넌트가 UserInfo 컴포넌트를 포함하고 있고, UserInfo 컴포넌트가 Avatar 컴포넌트를 포함하고 있는 구조. 기능 단위로 구분하는 것이 좋고, 나중에 곧바로 재사용이 가능한 형태로 추출하는 것이 좋음
